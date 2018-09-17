@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="./node_modules/web3/dist/web3.js"></script>
+
+</head>
+<body>
+    <div class="container">
+
+        <h1>Info Contract</h1>
+
+        <h2 id="info"></h2>
+
+        <label for="name" class="col-lg-2 control-label">Name</label>
+        <input id="name" type="text">
+
+        <label for="name" class="col-lg-2 control-label">Age</label>
+        <input id="age" type="text">
+
+        <button id="button">Update Info</button>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+       // Our future code here..
+       // if (typeof web3 !== 'undefined') {
+       window.addEventListener('load', function(){
+         console.log('hello');
+         web3 = new Web3(web3.currentProvider);
+       // } else {
+         // set the provider you want from Web3.providers
+         // web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:10606"));
+       // }
+
+       web3.eth.defaultAccount = web3.eth.accounts[0];
+       var infoContract = web3.eth.contract([
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "name": "_age",
+        "type": "uint256"
+      }
+    ],
+    "name": "setInfo",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getInfo",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+]);
+  // var info = infoContract.at('0x1b686c9c9f5381e282addca91aed8353ca747789');
+  var info = infoContract.at('0xf0ACdc935435Bf9641fe2Bd88d5DcBc89a8405da');
+
+  info.getInfo(function(error, result){
+      if(!error)
+          {
+            console.log('aaa')
+              $("#info").html(result[0]+' ('+result[1]+' years old)');
+              console.log(result);
+          }
+      else {
+        console.log('bbb')
+          //console.error(error);
+      }
+
+  });
+
+  $("#button").click(function() {
+      info.setInfo($("#name").val(), $("#age").val(), function(error, result) {
+        if (!error)
+        {
+          console.log('write info success');
+        }
+        else {
+          console.log('write info fail');
+        }
+      });
+  });
+       });
+
+    </script>
+
+</body>
+</html>
